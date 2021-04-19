@@ -3,9 +3,9 @@
 # generate acount number = Ramdom Number, database, dictionary, and direction to bank operation
 # Bank Operation = make deposite, withdrawal, check account balancd, and make a complain.
 #
-
 import random
-database = {}
+import database
+import validation
 
 
 def initializing():
@@ -24,32 +24,58 @@ authorized_name = ['Wisdom Uwaifo',
                    'Hamza Boubacar Kassomou', 'Alex Gano', 'Adam Kurbansho']
 authorized_email = ['wisdom@ubank.org',
                     'hamza@ubank.org', 'alex@ubank.org', 'adam@ubank.org']
+# account_number = [1039456821]
 
 
 def register():
-    input('What is your first name?')
-    input("What is your last name?")
-    Input('What is your home adress inclusing the city and the Zipcode?')
-    input('What ia your date birth')
-    input('what is your email address?')
-    print('Thank you for creating an account with us. You may now proceed to create your bank account')
-    generate_account_number()
-    print('If you have any question contact our customer service team')
+    first_name = input('What is your first name? \n')
+    last_name = input("What is your last name? \n")
+    home_address = input(
+        'What is your home adress inclusing the city and the Zipcode? \n')
+    date_of_birth = input('What ia your date birth \n')
+    email_address = input('what is your email address? \n')
+    print('Thank you for creating an account with us. \n')
+    account_number = generate_account_number()
+    print('Here is your accoun number. We will mail your debit card to in 3 to 5 business days:',
+          account_number)
+
+    is_user_created = database.create(
+        account_number, first_name, last_name, date_of_birth, email_address)
+    if is_user_created:
+        print('your account has been created')
+        print(' = ==== ==== ======= ====== =')
+        print('your account number is: %d' % account_number)
+        print('keep your account number confidential')
+        print(' = === ===== ==== ==== ==== =')
+        login()
+    else:
+        print('something has gone wrong, please try again')
+        register()
 
 
 def login():
+    print('login into your account')
     name = input('What is your name? \n')
-
     if name in authorized_name:
         email = input('what is your email address? \n')
-
         name_id = authorized_name.index(name)
         if email == authorized_email[name_id]:
             password = input('Please enter your password. \n')
             authorized_password = ['Pawisdom', 'pahamza', 'paalex', 'paadam']
             email_id = authorized_email.index(email)
             if password == authorized_password[email_id]:
-                bank_operation()
+                account_number_from_users = int(
+                    input('what is your account number? \n'))
+                if account_number_from_users in account_number:
+
+                    bank_operation()
+                else:
+                    print('Wrong account number. Try again')
+
+                # for account_number, user_details in database.items():
+                    # if account_number == account_number_from_users:
+                    # if user_details[3] == password:
+
             else:
                 print('wrong Password, please try again')
         else:
@@ -59,26 +85,33 @@ def login():
 
 
 def bank_operation():
-    operation = int(input(
-        'what would you like to do today? 1 (Create a new account) 2 (Withdrawal) 3 (Deposit) 4 (Check account balance) 5 (Make a Complain) \n'))
-    if operation == 1:
-        print(generate_account_number())
-        print('Please proceed to make your initial deposit.')
-        make_a_deposit()
-    elif operation == 2:
-        make_a_withdrawal()
-    elif operation == 3:
-        make_a_deposit()
-    elif operation == 4:
-        check_account_balance()
-    elif operation == 5:
-        make_a_complain
-    else:
-        print('Invalid option selected. Please try again.')
+    print('welcome %s ' % (authorized_name[0]))
+    is_selected_option_valid = False
+    while is_selected_option_valid == False:
+        operation = int(input(
+            'what would you like to do today? 1 (Create a new account) 2 (Withdrawal) 3 (Deposit) 4 (Check account balance) 5 (Make a Complain) \n'))
+        if operation == 1:
+            is_selected_option_valid = True
+            print(generate_account_number())
+            print('Please proceed to make your initial deposit.')
+            make_a_deposit()
+        elif operation == 2:
+            is_selected_option_valid = True
+            make_a_withdrawal()
+        elif operation == 3:
+            is_selected_option_valid = True
+            make_a_deposit()
+        elif operation == 4:
+            is_selected_option_valid = True
+            check_account_balance()
+        elif operation == 5:
+            is_selected_option_valid = True
+            make_a_complain
+        else:
+            print('Invalid option selected. Please try again.')
 
 
 def generate_account_number():
-    print('Here is your accoun number. We will mail your debit card to in 3 to 5 business days.')
     return random.randrange(1111111111, 9999999999)
 
 
